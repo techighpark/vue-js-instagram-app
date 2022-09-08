@@ -1,27 +1,45 @@
 <template>
   <div class="header">
     <ul class="header-button-left">
-      <li>Cancel</li>
+      <li @click="currentTab--">Cancel</li>
     </ul>
     <ul class="header-button-right">
-      <li>Next</li>
+      <li v-if="currentTab === 1" @click="currentTab++">Next</li>
+      <li v-if="currentTab === 2" @click="publish">Post</li>
     </ul>
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <Container :posts="posts" />
+  <Container
+    :posts="posts"
+    :current-tab="currentTab"
+    :upload-img-url="uploadImgUrl"
+  />
+  <button @click="showMore">show more</button>
 
   <div class="footer">
     <ul class="footer-button-plus">
-      <input type="file" id="file" class="inputfile" />
+      <input
+        type="file"
+        accept="image/*"
+        id="file"
+        class="input-file"
+        @change="uploadImg"
+      />
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
+
+  <div>{{ tabs[currentTab] }}</div>
+  <button v-for="(tab, i) in tabs" :key="i" @click="clickTab(i)">
+    {{ tab }}
+  </button>
 </template>
 
 <script>
 import Container from '@/components/Container.vue';
 import posts from '@/assets/posts';
+import axios from 'axios';
 export default {
   name: 'App',
   components: {
@@ -30,7 +48,48 @@ export default {
   data() {
     return {
       posts,
+      currentTab: 0,
+      tabs: ['Post', 'Filters', 'Write'],
+      uploadImgUrl: '',
     };
+  },
+  mounted() {
+    console.log(this.currentTab);
+  },
+  updated() {
+    console.log(this.currentTab);
+  },
+  methods: {
+    showMore() {
+      axios
+        .get('https://codingapple1.github.io/vue/more0.json')
+        .then(res => {
+          this.posts.push(res.data);
+        })
+        .catch(err => console.log(err));
+    },
+    clickTab(tab) {
+      this.currentTab = tab;
+    },
+    uploadImg(e) {
+      const uploadImg = e.target.files[0];
+      this.currentTab = 1;
+      this.uploadImgUrl = URL.createObjectURL(uploadImg);
+    },
+    publish() {
+      const newPost = {
+        name: 'Kim Hyun',
+        userImage: 'https://placeimg.com/100/100/arch',
+        postImage: this.uploadImgUrl,
+        likes: 36,
+        date: 'May 15',
+        liked: false,
+        content: '내가입력한글',
+        filter: 'perpetua',
+      };
+      this.posts.unshift(newPost);
+      this.currentTab = 0;
+    },
   },
 };
 </script>
@@ -95,7 +154,7 @@ ul {
   height: 600px;
   background-color: bisque;
 }
-.inputfile {
+.input-file {
   display: none;
 }
 .input-plus {
