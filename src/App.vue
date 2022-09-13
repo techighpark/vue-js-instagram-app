@@ -60,7 +60,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.currentTab);
+    this.emitter.on('name', data => console.log(data));
   },
   updated() {
     console.log(this.currentTab);
