@@ -1,8 +1,17 @@
 <template>
+  <h1>{{ $store.state.lastName }}</h1>
+  <button @click="$store.commit('modifyLastName')">modify</button>
+  <h3>{{ $store.state.age }}</h3>
+  <button @click="$store.commit('minusAge')">-</button>
+  <button>reset</button>
+  <button @click="$store.commit('plusAge', 10)">+</button>
+  <p>{{ $store.state.morePost }}</p>
+  <button @click="$store.dispatch('getData')">More +++++</button>
   <Button>
     <template v-slot:slot-a> 123</template>
     <template v-slot:default="props"> {{ props.componentProps }}</template>
   </Button>
+
   <div class="header">
     <ul class="header-button-left">
       <li @click="currentTab--">Cancel</li>
@@ -14,10 +23,16 @@
     <img src="./assets/logo.png" class="logo" />
   </div>
 
+  <p>{{ nowTwo }}{{ counter }}</p>
+  <p>{{ nowOne() }}{{ counter }}</p>
+  <button @click="counter++">now one</button>
+
   <Container
+    :clickedFilter="clickedFilter"
     :posts="posts"
     :current-tab="currentTab"
     :upload-img-url="uploadImgUrl"
+    @write="writeContent = $event"
   />
   <button @click="showMore">show more</button>
 
@@ -45,6 +60,7 @@ import Container from '@/components/Container.vue';
 import posts from '@/assets/posts';
 import axios from 'axios';
 import Button from './components/Button.vue';
+import { mapMutations, mapState } from 'vuex';
 export default {
   name: 'App',
   components: {
@@ -53,19 +69,32 @@ export default {
   },
   data() {
     return {
+      counter: 0,
       posts,
       currentTab: 0,
       tabs: ['Post', 'Filters', 'Write'],
       uploadImgUrl: '',
+      writeContent: '',
+      clickedFilter: '',
     };
   },
   mounted() {
-    this.emitter.on('name', data => console.log(data));
+    this.emitter.on('clickFilter', data => (this.clickedFilter = data));
   },
-  updated() {
-    console.log(this.currentTab);
+  computed: {
+    nowTwo() {
+      return new Date();
+    },
+    lastName() {
+      return this.$store.state.lastName;
+    },
+    ...mapState(['lastName', 'age', 'likes']),
   },
   methods: {
+    ...mapMutations(['setMore']),
+    nowOne() {
+      return new Date();
+    },
     showMore() {
       axios
         .get('https://codingapple1.github.io/vue/more0.json')
@@ -90,9 +119,10 @@ export default {
         likes: 36,
         date: 'May 15',
         liked: false,
-        content: '내가입력한글',
-        filter: 'perpetua',
+        content: this.writeContent,
+        filter: this.clickedFilter,
       };
+      console.log(this.clickedFilter);
       this.posts.unshift(newPost);
       this.currentTab = 0;
     },

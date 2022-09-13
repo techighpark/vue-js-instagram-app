@@ -1,44 +1,76 @@
 <template lang="">
-  <div v-if="currentTab === 0">
-    <Post :post="post" v-for="(post, i) in posts" :key="i" />
-  </div>
-
-  <div
-    class="upload-image"
-    v-if="currentTab !== 0"
-    :style="uploadImgUrlObj"
-  ></div>
-  <div
-    class="upload-image"
-    v-if="currentTab !== 0"
-    :style="uploadImgUrlObject"
-  ></div>
-  <div class="filters" v-if="currentTab === 1">
-    <div class="filter-1"></div>
-    <div class="filter-1"></div>
-    <div class="filter-1"></div>
-    <div class="filter-1"></div>
-    <div class="filter-1"></div>
-  </div>
-  <!-- 글작성페이지 -->
-  <div class="write" v-if="currentTab === 2">
-    <textarea class="write-box">write!</textarea>
+  <div>
+    <div v-if="currentTab === 0">
+      <Post :post="post" v-for="(post, i) in posts" :key="i" />
+    </div>
+    <div
+      :class="clickedFilter"
+      class="upload-image"
+      :style="uploadImgUrlObject"
+    ></div>
+    <div class="filters" v-if="currentTab === 1">
+      <FilterBoxVue
+        :filter="filter"
+        :image="uploadImgUrlObject"
+        v-for="filter in filters"
+        :key="filter"
+        >{{ filter }}</FilterBoxVue
+      >
+    </div>
+    <!-- 글작성페이지 -->
+    <div class="write" v-if="currentTab === 2">
+      <textarea
+        class="write-box"
+        placeholder="write!"
+        @input="$emit('write', $event.target.value)"
+      ></textarea>
+    </div>
   </div>
 </template>
 <script>
 import Post from '@/components/Post.vue';
+import FilterBoxVue from './FilterBox.vue';
 export default {
   components: {
     Post,
+    FilterBoxVue,
   },
   props: {
     posts: Array,
     currentTab: Number,
     uploadImgUrl: String,
+    clickedFilter: String,
   },
   data() {
     return {
-      uploadImgUrlObj: { backgroundImage: ` url(${this.uploadImgUrl})` },
+      filters: [
+        'aden',
+        '_1977',
+        'brannan',
+        'brooklyn',
+        'clarendon',
+        'earlybird',
+        'gingham',
+        'hudson',
+        'inkwell',
+        'kelvin',
+        'lark',
+        'lofi',
+        'maven',
+        'mayfair',
+        'moon',
+        'nashville',
+        'perpetua',
+        'reyes',
+        'rise',
+        'slumber',
+        'stinson',
+        'toaster',
+        'valencia',
+        'walden',
+        'willow',
+        'xpro2',
+      ],
     };
   },
   computed: {

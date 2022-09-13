@@ -4,9 +4,17 @@
       <div class="profile" :style="profileCssObject"></div>
       <span class="profile-name">{{ post.name }}</span>
     </div>
-    <div class="post-body" :style="postCssObject"></div>
+    <div
+      @click="$store.commit('toggleLike')"
+      :class="post.filter"
+      class="post-body"
+      :style="postCssObject"
+    ></div>
     <div class="post-content">
-      <p>{{ post.likes }}</p>
+      <p>
+        {{ $store.state.likes }}
+        {{ $store.state.likes === 1 ? 'Like' : 'Likes' }}
+      </p>
       <p>
         <strong>{{ post.name }}</strong> {{ post.content }}
       </p>
