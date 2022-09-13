@@ -1,4 +1,8 @@
 <template>
+  <Button>
+    <template v-slot:slot-a> 123</template>
+    <template v-slot:default="props"> {{ props.componentProps }}</template>
+  </Button>
   <div class="header">
     <ul class="header-button-left">
       <li @click="currentTab--">Cancel</li>
@@ -40,10 +44,12 @@
 import Container from '@/components/Container.vue';
 import posts from '@/assets/posts';
 import axios from 'axios';
+import Button from './components/Button.vue';
 export default {
   name: 'App',
   components: {
     Container,
+    Button,
   },
   data() {
     return {
