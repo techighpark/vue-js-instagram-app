@@ -1,4 +1,5 @@
 <template>
+  <!-- vuex -->
   <h1>{{ $store.state.lastName }}</h1>
   <button @click="$store.commit('modifyLastName')">modify</button>
   <h3>{{ $store.state.age }}</h3>
@@ -48,7 +49,9 @@
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
-
+  <div v-if="currentTab === 3">
+    <MyPage />
+  </div>
   <div>{{ tabs[currentTab] }}</div>
   <button v-for="(tab, i) in tabs" :key="i" @click="clickTab(i)">
     {{ tab }}
@@ -61,18 +64,20 @@ import posts from '@/assets/posts';
 import axios from 'axios';
 import Button from './components/Button.vue';
 import { mapMutations, mapState } from 'vuex';
+import MyPage from './components/MyPage.vue';
 export default {
   name: 'App',
   components: {
     Container,
     Button,
+    MyPage,
   },
   data() {
     return {
       counter: 0,
       posts,
-      currentTab: 0,
-      tabs: ['Post', 'Filters', 'Write'],
+      currentTab: 3,
+      tabs: ['Post', 'Filters', 'Write', 'My Page'],
       uploadImgUrl: '',
       writeContent: '',
       clickedFilter: '',
